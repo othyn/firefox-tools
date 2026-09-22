@@ -43,6 +43,10 @@ that used to work stops working everywhere simultaneously.
 `youtube/content.js` and `youtube/linkding-badges.js` were already IIFEs and
 were left alone.
 
+`test.js` enforces the rule: it compiles each context's scripts together — the
+background page, the popup page and each `content_scripts` entry, read straight
+out of `manifest.json` — so a collision fails the suite rather than the browser.
+
 ## The popup is a hub
 
 One toolbar button, so one popup: `popup/popup.html` holds a tab strip over
