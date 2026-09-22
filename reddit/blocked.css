@@ -1,0 +1,58 @@
+/* Standalone page, so it shares nothing with the popup stylesheet. */
+:root {
+  color-scheme: dark;
+  --bg: #14161a;
+  --fg: #e8eaed;
+  --muted: #9aa0a6;
+  --accent: #ff581a;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+  padding: 2rem;
+  background: var(--bg);
+  color: var(--fg);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  text-align: center;
+}
+
+main { max-width: 34rem; }
+
+.eyebrow {
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(1.75rem, 5vw, 2.75rem);
+  line-height: 1.15;
+  font-weight: 650;
+  text-wrap: balance;
+}
+
+.sub {
+  margin: 1.25rem 0 0;
+  color: var(--muted);
+  text-wrap: balance;
+}
+
+footer {
+  max-width: 34rem;
+  font-size: 0.8125rem;
+  color: var(--muted);
+}
+
+footer strong { color: var(--fg); font-weight: 600; }

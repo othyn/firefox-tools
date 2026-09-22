@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="popup.css">
+  <title>Firefox Tools</title>
+</head>
+<body>
+  <header>
+    <img src="../icons/icon.svg" alt="">
+    <h1>Firefox Tools</h1>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button type="button" class="tab" role="tab" id="tab-reddit" aria-controls="panel-reddit" aria-selected="false">
+      <img src="../icons/reddit.svg" alt=""> Reddit
+    </button>
+    <button type="button" class="tab" role="tab" id="tab-youtube" aria-controls="panel-youtube" aria-selected="false">
+      <img src="../icons/youtube.svg" alt=""> YouTube
+    </button>
+    <button type="button" class="tab" role="tab" id="tab-zen" aria-controls="panel-zen" aria-selected="false">
+      <img src="../icons/zen.svg" alt=""> Folders
+    </button>
+  </nav>
+
+  <!-- ===================================================================== -->
+  <section class="panel" id="panel-reddit" role="tabpanel" aria-labelledby="tab-reddit" hidden>
+    <div class="group">
+      <div class="row">
+        <label for="enabled">Enabled</label>
+        <label class="switch">
+          <input type="checkbox" id="enabled">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <p class="hint">Master switch. Turning this off leaves Reddit entirely alone.</p>
+
+      <div class="row">
+        <label for="sort">Default comment sort</label>
+        <select id="sort"></select>
+      </div>
+      <p class="hint">Applied to comment pages when the link doesn't already specify a sort, so Reddit's own sort dropdown still wins.</p>
+
+      <div class="row">
+        <label for="declutter">Hide sidebars and navbar</label>
+        <label class="switch">
+          <input type="checkbox" id="declutter">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <p class="hint">Removes both sidebars, the search box, and Sign Up / Log In. The logo and the three-dot menu stay.</p>
+
+      <div class="row">
+        <label for="hideInert">Hide dead controls</label>
+        <label class="switch">
+          <input type="checkbox" id="hideInert">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <p class="hint">The comment box, and Reply / Award / Share on each comment — all no-ops without an account. Votes and the overflow menu stay. Promoted posts go too.</p>
+
+      <div class="row">
+        <label for="wideContent">Full-width content</label>
+        <label class="switch">
+          <input type="checkbox" id="wideContent">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <p class="hint">Content fills the window, flush left, the way Old Reddit did. Post images keep their current size.</p>
+
+      <div class="row">
+        <label for="blockHome">Block the home page</label>
+        <label class="switch">
+          <input type="checkbox" id="blockHome">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <p class="hint">The front page, /best, /hot, /new, /top, /rising, r/all and r/popular are replaced with a block page. Subreddits, posts, users and search are untouched.</p>
+
+      <div class="row">
+        <label for="logoToSubreddit">Logo returns to the subreddit</label>
+        <label class="switch">
+          <input type="checkbox" id="logoToSubreddit">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <p class="hint">The Reddit logo goes back to the subreddit you're reading instead of the front page.</p>
+
+      <div class="row">
+        <label for="commentsNewTab">Open posts in a new tab</label>
+        <label class="switch">
+          <input type="checkbox" id="commentsNewTab">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <p class="hint">Clicking a post in a listing opens its comments in a new tab.</p>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <section class="panel" id="panel-youtube" role="tabpanel" aria-labelledby="tab-youtube" hidden>
+    <section class="group">
+      <h2>Clean links</h2>
+      <div class="row">
+        <label for="cleanLinks">Strip &amp;list / &amp;index</label>
+        <label class="switch"><input type="checkbox" id="cleanLinks" /><span class="slider"></span></label>
+      </div>
+      <div class="row">
+        <label for="forceNewTab">Force new-tab opens</label>
+        <label class="switch"><input type="checkbox" id="forceNewTab" /><span class="slider"></span></label>
+      </div>
+    </section>
+
+    <section class="group">
+      <h2>Linkding bookmarks</h2>
+      <div class="row">
+        <label for="linkdingEnabled">Badge saved videos</label>
+        <label class="switch"><input type="checkbox" id="linkdingEnabled" /><span class="slider"></span></label>
+      </div>
+      <div class="row stack">
+        <label for="linkdingBaseUrl">Linkding URL</label>
+        <input type="url" id="linkdingBaseUrl" class="text" placeholder="https://links.in.othyn.com" />
+      </div>
+      <div class="row stack">
+        <label for="linkdingApiKey">API token</label>
+        <input type="password" id="linkdingApiKey" class="text" autocomplete="off" />
+      </div>
+      <div class="actions">
+        <button id="linkdingTestBtn" type="button">Test &amp; refresh</button>
+      </div>
+      <div id="linkdingStatus" class="status"></div>
+    </section>
+
+    <section class="group">
+      <h2>Export list</h2>
+      <p class="hint">
+        Save every video in this playlist as JSON (URL, title, author) — feed it to
+        <code>/oth:yt-linkding</code> to archive into Linkding, auto-tagged.
+      </p>
+      <div class="actions">
+        <button id="exportBtn" type="button" disabled>Export list (JSON)</button>
+      </div>
+      <div id="exportStatus" class="status"></div>
+    </section>
+
+    <section class="group">
+      <h2>Delete videos</h2>
+      <div class="row">
+        <label for="minDelay">Delay min / max (s)</label>
+        <span class="pair">
+          <input type="number" id="minDelay" min="0" max="60" />
+          <input type="number" id="maxDelay" min="0" max="60" />
+        </span>
+      </div>
+      <div class="row">
+        <label for="maxDelete">Max videos to delete</label>
+        <input type="number" id="maxDelete" min="1" class="num" />
+      </div>
+
+      <details class="advanced">
+        <summary>Advanced</summary>
+        <div class="row">
+          <label for="threshold">Threshold % watched</label>
+          <input type="number" id="threshold" min="0" max="100" class="num" />
+        </div>
+        <div class="row">
+          <label for="pauseAfter">Pause after (videos)</label>
+          <input type="number" id="pauseAfter" min="1" class="num" />
+        </div>
+        <div class="row">
+          <label for="pauseDuration">Pause duration (s)</label>
+          <input type="number" id="pauseDuration" min="1" max="3600" class="num" />
+        </div>
+        <div class="row">
+          <label for="autoScrollEvery">Auto-scroll every</label>
+          <input type="number" id="autoScrollEvery" min="1" class="num" />
+        </div>
+        <div class="row">
+          <label for="deletePrivate">Delete private videos</label>
+          <label class="switch"><input type="checkbox" id="deletePrivate" /><span class="slider"></span></label>
+        </div>
+        <div class="row">
+          <label for="shuffleDelete">Shuffle delete order</label>
+          <label class="switch"><input type="checkbox" id="shuffleDelete" /><span class="slider"></span></label>
+        </div>
+      </details>
+
+      <p id="playlistHint" class="hint" hidden>
+        Open a playlist page (e.g. Watch Later) to run a delete.
+      </p>
+
+      <div class="actions">
+        <button id="startBtn" type="button" class="primary">Start deleting</button>
+        <button id="pauseBtn" type="button" disabled>Pause</button>
+      </div>
+
+      <div class="progress"><div id="progressFill"></div></div>
+      <div id="status" class="status">Idle</div>
+      <div id="countdown" class="countdown"></div>
+    </section>
+  </section>
+
+  <!-- ===================================================================== -->
+  <section class="panel" id="panel-zen" role="tabpanel" aria-labelledby="tab-zen" hidden>
+    <div class="panel-head">
+      <label class="dry-run-toggle" title="Preview changes without applying them">
+        <input type="checkbox" id="dry-run" />
+        <span>Dry run</span>
+      </label>
+      <button id="refresh" type="button" title="Reload folder list">↻</button>
+    </div>
+
+    <div id="zen-status" role="status" aria-live="polite"></div>
+
+    <details id="preview" hidden>
+      <summary id="preview-summary"></summary>
+      <ol id="preview-list"></ol>
+      <div class="preview-actions">
+        <button id="preview-apply" type="button">Apply</button>
+        <button id="preview-discard" type="button">Discard</button>
+      </div>
+    </details>
+
+    <ul id="groups" class="groups"></ul>
+
+    <template id="group-tpl">
+      <li class="group">
+        <div class="group-head">
+          <span class="swatch" aria-hidden="true"></span>
+          <span class="title"></span>
+          <span class="meta"></span>
+        </div>
+        <div class="actions">
+          <select class="sort-mode" aria-label="Sort mode"></select>
+          <button class="sort" type="button">Sort</button>
+          <button class="dedupe" type="button">Dedupe</button>
+        </div>
+      </li>
+    </template>
+
+    <p id="empty" hidden>No folders or tab groups found in this window.</p>
+  </section>
+
+  <!-- popup.js reveals a panel; each panel script owns its own controls. -->
+  <script src="popup.js"></script>
+  <script src="../reddit/settings.js"></script>
+  <script src="../reddit/panel.js"></script>
+  <script src="../youtube/panel.js"></script>
+  <script src="../zen/lib/folder-tools.js"></script>
+  <script src="../zen/panel.js"></script>
+</body>
+</html>

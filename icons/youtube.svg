@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">
+  <rect width="96" height="96" rx="20" fill="#065fd4"/>
+  <!-- playlist rows -->
+  <rect x="20" y="26" width="38" height="6" rx="3" fill="#fff"/>
+  <rect x="20" y="40" width="38" height="6" rx="3" fill="#fff"/>
+  <rect x="20" y="54" width="22" height="6" rx="3" fill="#fff" opacity="0.65"/>
+  <!-- broom sweeping the bottom row away -->
+  <g transform="rotate(35 66 60)">
+    <rect x="63" y="30" width="5" height="26" rx="2.5" fill="#ffd24a"/>
+    <path d="M55 56 h22 l4 16 h-30 z" fill="#ffd24a"/>
+    <path d="M55 60 h22 M58 60 v12 M64 60 v12 M70 60 v12 M76 60 v12" stroke="#065fd4" stroke-width="2"/>
+  </g>
+</svg>

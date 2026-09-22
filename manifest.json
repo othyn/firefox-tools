@@ -1,0 +1,89 @@
+{
+  "manifest_version": 3,
+  "name": "Firefox Tools",
+  "version": "1.0.0",
+  "description": "Personal browser fixes in one add-on: makes New Reddit bearable and blocks its front page, adds bulk-delete / export / link-cleaning / Linkding badges to YouTube, and sorts and dedupes Zen sidebar folders and Firefox tab groups.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "firefox-tools@othyn.com",
+      "strict_min_version": "139.0",
+      "data_collection_permissions": { "required": ["none"] }
+    }
+  },
+  "permissions": [
+    "webRequest",
+    "webRequestBlocking",
+    "storage",
+    "tabs",
+    "tabGroups",
+    "menus",
+    "notifications"
+  ],
+  "optional_permissions": ["*://*/*"],
+  "host_permissions": [
+    "*://*.reddit.com/*",
+    "*://*.youtube.com/*",
+    "*://youtube.com/*"
+  ],
+  "background": {
+    "scripts": [
+      "reddit/settings.js",
+      "reddit/background.js",
+      "youtube/background.js",
+      "zen/lib/folder-tools.js",
+      "zen/background.js"
+    ]
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://reddit.com/*",
+        "*://www.reddit.com/*",
+        "*://sh.reddit.com/*"
+      ],
+      "js": ["reddit/settings.js", "reddit/content.js"],
+      "css": ["reddit/reddit.css"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "*://*.youtube.com/playlist*",
+        "*://youtube.com/playlist*"
+      ],
+      "js": ["youtube/content.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "*://*.youtube.com/*",
+        "*://youtube.com/*"
+      ],
+      "js": ["youtube/linkding-badges.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["reddit/blocked.html"],
+      "matches": ["*://*.reddit.com/*"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "Firefox Tools",
+    "default_icon": {
+      "16": "icons/icon.svg",
+      "32": "icons/icon.svg",
+      "48": "icons/icon.svg",
+      "96": "icons/icon.svg"
+    }
+  },
+  "options_ui": {
+    "page": "popup/popup.html",
+    "open_in_tab": false
+  },
+  "icons": {
+    "48": "icons/icon.svg",
+    "96": "icons/icon.svg"
+  }
+}

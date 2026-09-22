@@ -1,0 +1,554 @@
+/* One stylesheet for all three panels. The three extensions this was merged
+   from each had their own, built on the same primitives (.row, .switch, .group,
+   .actions, .status) with slightly different numbers — so they are defined once
+   here, and only the genuinely bespoke parts are scoped to a panel. */
+
+:root {
+  color-scheme: light dark;
+  --bg: Canvas;
+  --fg: CanvasText;
+  --muted: GrayText;
+  --accent: AccentColor;
+  --danger: #cc0000;
+  --row-hover: color-mix(in srgb, CanvasText 6%, transparent);
+  --border: color-mix(in srgb, CanvasText 18%, transparent);
+  --section: color-mix(in srgb, CanvasText 4%, transparent);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 340px;
+  max-width: 420px;
+  font: menu;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+/* --- Chrome: app header and tab strip ------------------------------------ */
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+}
+
+header img {
+  width: 20px;
+  height: 20px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.tabs {
+  display: flex;
+  gap: 2px;
+  padding: 0 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  justify-content: center;
+  font: inherit;
+  font-size: 12px;
+  padding: 8px 6px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.tab img {
+  width: 14px;
+  height: 14px;
+}
+
+.tab:hover {
+  background: var(--row-hover);
+}
+
+.tab[aria-selected="true"] {
+  color: var(--fg);
+  font-weight: 600;
+  border-bottom-color: var(--accent);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+/* --- Shared primitives --------------------------------------------------- */
+
+/* Both a YouTube settings section and a Zen folder row, which want the same
+   padding and separator. */
+.group {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.group:last-child {
+  border-bottom: none;
+}
+
+h2 {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 30px;
+}
+
+.row + .row {
+  margin-top: 2px;
+}
+
+.row label {
+  font-size: 13px;
+}
+
+/* Stack a label above its full-width input (the default .row is horizontal). */
+.row.stack {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.hint {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.status {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Fields */
+select,
+.text,
+.num,
+.pair input {
+  font: inherit;
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  background: var(--bg);
+  color: inherit;
+}
+
+select {
+  padding: 4px 7px;
+  min-width: 130px;
+}
+
+select:disabled {
+  opacity: 0.5;
+}
+
+.num,
+.pair input {
+  width: 56px;
+  padding: 3px 6px;
+  text-align: right;
+}
+
+.pair {
+  display: inline-flex;
+  gap: 6px;
+}
+
+/* Long values: the Linkding URL and API token. */
+.text {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 7px;
+}
+
+/* Buttons */
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.actions button,
+.preview-actions button {
+  flex: 1;
+  font: inherit;
+  font-weight: 600;
+  padding: 7px 10px;
+  border-radius: 7px;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: inherit;
+}
+
+.actions button:hover:not(:disabled),
+.preview-actions button:hover:not(:disabled) {
+  background: var(--row-hover);
+}
+
+.actions button:disabled,
+.preview-actions button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.actions .primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: transparent;
+}
+
+.actions .danger {
+  background: var(--danger);
+  color: #fff;
+  border-color: transparent;
+}
+
+/* Toggle switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 38px;
+  height: 22px;
+  flex: none;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  inset: 0;
+  cursor: pointer;
+  background: color-mix(in srgb, CanvasText 25%, transparent);
+  border-radius: 22px;
+  transition: background 0.15s;
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  top: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.15s;
+}
+
+.switch input:checked + .slider {
+  background: var(--accent);
+}
+
+.switch input:checked + .slider::before {
+  transform: translateX(16px);
+}
+
+.switch input:focus-visible + .slider {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.switch input:disabled + .slider {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* --- Reddit panel -------------------------------------------------------- */
+
+/* A flat list of switches, so each row gets a separator and its own hint. */
+#panel-reddit .row {
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+}
+
+#panel-reddit .row:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+/* --- YouTube panel ------------------------------------------------------- */
+
+#panel-youtube .hint {
+  margin: 8px 0 0;
+  padding: 6px 8px;
+  border-radius: 5px;
+  background: var(--section);
+}
+
+#panel-youtube .advanced {
+  margin-top: 8px;
+}
+
+#panel-youtube .advanced > summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+#panel-youtube .advanced[open] > summary {
+  margin-bottom: 6px;
+}
+
+.progress {
+  height: 6px;
+  margin-top: 10px;
+  border-radius: 4px;
+  background: color-mix(in srgb, CanvasText 12%, transparent);
+  overflow: hidden;
+}
+
+#progressFill {
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+  transition: width 0.2s ease;
+}
+
+#countdown {
+  font-size: 12px;
+  color: var(--muted);
+  min-height: 1.2em;
+}
+
+/* --- Folders panel ------------------------------------------------------- */
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px 0;
+}
+
+.dry-run-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.dry-run-toggle input {
+  margin: 0;
+}
+
+#refresh {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  cursor: pointer;
+  color: inherit;
+}
+
+#refresh:hover {
+  background: var(--row-hover);
+}
+
+#zen-status {
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--muted);
+  min-height: 1.4em;
+}
+
+#zen-status.error {
+  color: #c0392b;
+}
+
+#zen-status.success {
+  color: #2e7d32;
+  font-weight: 500;
+}
+
+#zen-status.success::before {
+  content: "✓ ";
+}
+
+#zen-status.success.flash {
+  background: color-mix(in srgb, #2e7d32 14%, transparent);
+  border-radius: 4px;
+  padding: 6px 10px;
+  margin: 2px 12px;
+  transition: background 0.4s ease-out;
+}
+
+.groups {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+.group-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  flex-shrink: 0;
+}
+
+/* Tab-group colour hints (Firefox tab group colors). */
+.swatch[data-color="blue"] { background: #4f8cf7; }
+.swatch[data-color="red"] { background: #e25555; }
+.swatch[data-color="yellow"] { background: #e8b339; }
+.swatch[data-color="green"] { background: #4caf50; }
+.swatch[data-color="pink"] { background: #e377c2; }
+.swatch[data-color="purple"] { background: #9b59b6; }
+.swatch[data-color="cyan"] { background: #1abc9c; }
+.swatch[data-color="orange"] { background: #ff9f43; }
+.swatch[data-color="grey"] { background: #95a5a6; }
+
+#panel-zen .title {
+  font-weight: 500;
+  font-size: 13px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#panel-zen .meta {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* A select that flexes beside two fixed-width buttons, unlike the equal-width
+   button rows everywhere else. */
+#panel-zen .actions {
+  gap: 6px;
+  margin-top: 0;
+  align-items: center;
+}
+
+#panel-zen .actions button {
+  flex: none;
+  font-weight: normal;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
+.sort-mode {
+  flex: 1;
+  min-width: 0;
+  font: inherit;
+  padding: 4px 6px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  color: inherit;
+}
+
+#empty {
+  padding: 20px 12px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+#preview {
+  margin: 0 12px 12px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px 10px;
+  font-size: 12px;
+  background: color-mix(in srgb, AccentColor 6%, transparent);
+}
+
+#preview > summary {
+  cursor: pointer;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+#preview-list {
+  margin: 6px 0;
+  padding-left: 20px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+#preview-list li {
+  margin-bottom: 3px;
+  word-break: break-word;
+}
+
+#preview-list .move-arrow {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  margin-right: 6px;
+}
+
+#preview-list .dup-keeper {
+  color: var(--muted);
+  font-size: 11px;
+  display: block;
+}
+
+.preview-actions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.preview-actions button {
+  flex: none;
+  font-weight: normal;
+  padding: 4px 12px;
+  border-radius: 4px;
+}
+
+#preview-apply {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+#preview-apply:hover:not(:disabled) {
+  filter: brightness(1.1);
+  background: var(--accent);
+}

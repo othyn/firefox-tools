@@ -1,0 +1,12 @@
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Packaged builds
+dist/
+*.zip
+*.xpi
+web-ext-artifacts/

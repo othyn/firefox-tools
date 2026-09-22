@@ -1,0 +1,72 @@
+/*
+ * New Reddit (shreddit) surgery.
+ *
+ * Gates are INVERTED — every rule is scoped to `html:not([data-rt-off~="…"])`
+ * so the enabled path needs no JS and never flashes. content.js writes the
+ * tokens for the features that are *off*. See CLAUDE.md.
+ *
+ * Selectors verified against the live DOM on 11 September 2026 (r/apple feed
+ * and a post page, logged out, 1800px viewport). Reddit's class names are
+ * Tailwind build output and churn, so everything below hangs off an id, a
+ * custom element name, or a semantic attribute — never a class chain.
+ */
+
+:root {
+  /* Reddit's own content column ceiling (`.main-container` grid is
+     `minmax(0,756px)`), so capping media here keeps post images at exactly the
+     width they render at today once the column goes full width. */
+  --rt-media-max: 756px;
+}
+
+/* --- declutter: sidebars and navbar chrome ------------------------------ */
+
+/* Left nav is `position: fixed`, so it has to be hidden as well as have its
+   grid gutter collapsed below. */
+html:not([data-rt-off~="declutter"]) #left-sidebar-container,
+html:not([data-rt-off~="declutter"]) #right-sidebar-container,
+html:not([data-rt-off~="declutter"]) reddit-search-large,
+html:not([data-rt-off~="declutter"]) #navbar-menu-button,
+html:not([data-rt-off~="declutter"]) #signup-button,
+html:not([data-rt-off~="declutter"]) #login-button {
+  display: none !important;
+}
+
+/* --- inert: controls that do nothing without an account ----------------- */
+
+/* The "Join the conversation" composer. Its sibling div in the same header
+   holds the sort dropdown and comment search, which must survive. */
+html:not([data-rt-off~="inert"]) comment-body-header > faceplate-tracker[source="shreddit_comment_count_button"],
+html:not([data-rt-off~="inert"]) shreddit-comment-action-row > [slot="comment-reply"],
+html:not([data-rt-off~="inert"]) shreddit-comment-action-row > [slot="comment-award"],
+html:not([data-rt-off~="inert"]) shreddit-comment-action-row > [slot="comment-share"],
+html:not([data-rt-off~="inert"]) shreddit-ad-post,
+html:not([data-rt-off~="inert"]) shreddit-sidebar-ad,
+html:not([data-rt-off~="inert"]) shreddit-comments-page-ad {
+  display: none !important;
+}
+
+/* --- wide: Old Reddit's fluid, flush-left content ----------------------- */
+
+/* Outer grid reserves a 315px gutter for the fixed left nav. */
+html:not([data-rt-off~="wide"]) .grid-container {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+/* The centring and the 1120px cap both live here. */
+html:not([data-rt-off~="wide"]) #subgrid-container {
+  grid-column: 1 !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin-inline: 0 !important;
+}
+
+/* Inner grid reserves 316px for the right sidebar. */
+html:not([data-rt-off~="wide"]) .main-container {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+/* Widening the column must not upscale post media — images, video and
+   galleries all live inside this one wrapper. */
+html:not([data-rt-off~="wide"]) shreddit-post > [slot="post-media-container"] {
+  max-width: var(--rt-media-max) !important;
+}
