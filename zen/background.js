@@ -75,7 +75,14 @@
   // Messages from the popup. The popup renders its own success UI inline, so we
   // don't emit system notifications here — those are reserved for tab-context-menu
   // actions where there's no other surface to report back on.
-  browser.runtime.onMessage.addListener(async msg => {
+  //
+  // Deliberately not `async`: an async listener always returns a promise, which
+  // tells the browser "I will answer this" for *every* message on the shared
+  // background page, including the YouTube half's. That promise resolves to
+  // undefined immediately and so beats any listener doing real work, and the
+  // sender gets nothing back. Returning the promise only for the kinds we own
+  // leaves the rest undefined, which is how a listener declines a message.
+  browser.runtime.onMessage.addListener(msg => {
     if (msg?.kind === "sort") {
       return sortGroup(msg.groupId, msg.modeKey, { dryRun: !!msg.dryRun });
     }

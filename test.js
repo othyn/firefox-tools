@@ -147,3 +147,18 @@ test("the popup loads every script the manifest's contexts rely on", () => {
   );
   assert.deepStrictEqual(srcs, CONTEXTS["popup page"]);
 });
+
+test("no background listener claims messages another area owns", () => {
+  // An `async` onMessage listener returns a promise for every message, which
+  // tells the browser it will answer — including messages belonging to another
+  // area of the merged background page. It resolves to undefined immediately,
+  // so it beats the listener doing real work and the sender gets nothing.
+  for (const file of manifest.background.scripts) {
+    const src = fs.readFileSync(file, "utf8");
+    assert.doesNotMatch(
+      src,
+      /onMessage\.addListener\(\s*async\b/,
+      `${file}: onMessage listener is async, so it answers every message`
+    );
+  }
+});

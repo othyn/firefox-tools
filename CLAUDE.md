@@ -47,6 +47,19 @@ were left alone.
 background page, the popup page and each `content_scripts` entry, read straight
 out of `manifest.json` — so a collision fails the suite rather than the browser.
 
+### The background page's listeners are shared too
+
+`runtime.onMessage` listeners from all three areas now see every message, so
+**no listener may be `async`**. An async function always returns a promise,
+which is how a listener tells the browser "I will answer this" — for every
+message, not just its own. It resolves to `undefined` at once, beating any
+listener actually doing work, and the sender gets nothing back. The Folders
+half shipped an async listener before the merge, where it was harmless, and it
+swallowed the YouTube half's Linkding replies the moment they shared a page.
+
+Decline a message by returning `undefined`: test the message shape first and
+return the promise only for the kinds you own. `test.js` checks for this.
+
 ## The popup is a hub
 
 One toolbar button, so one popup: `popup/popup.html` holds a tab strip over
